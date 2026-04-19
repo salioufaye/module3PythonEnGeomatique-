@@ -129,3 +129,28 @@ ndvi_clip = ndvi.rio.clip(zone.geometry, zone.crs)
 # Sauvegarder
 ndvi_clip.rio.to_raster("Module 3/data/output/ndvi_clip.tif")
 
+#************************************************************
+# correction des classes:
+#************************************************************
+classified = np.where(band <0.002, 1,
+                          np.where(band < 0.02, 2, 3) )
+
+
+#-------------------------------------------------------------
+#version avec rioxarray
+#-------------------------------------------------------------
+import rioxarray
+import numpy as np
+
+b7 = rioxarray.open_rasterio("Module 3/data/input/B7.tif")
+
+classified = xr.apply_ufunc(
+    lambda x: np.digitize(x, [0.002, 0.02]) + 1,
+    b7
+)
+
+classified.rio.to_raster("Module 3/data/output/B7_Classes.tif")
+#****************************************************************
+
+    
+
