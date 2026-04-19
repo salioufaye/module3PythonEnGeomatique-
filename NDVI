@@ -1,0 +1,39 @@
+# crer un NDVI avecrasterio
+#*****************************************************************************
+import rasterio
+import numpy as np
+
+# ouvrir les bandes
+with rasterio.open("B04.tif") as red_src:
+    red = red_src.read(1).astype('float32')
+
+with rasterio.open("B08.tif") as nir_src:
+    nir = nir_src.read(1).astype('float32')
+
+# éviter division par 0
+np.seterr(divide='ignore', invalid='ignore')
+
+# calcul NDVI
+ndvi = (nir - red) / (nir + red)
+
+# sauvegarde
+meta = nir_src.meta
+meta.update(dtype='float32')
+
+with rasterio.open("ndvi.tif", "w", **meta) as dst:
+    dst.write(ndvi, 1)
+
+#***************************************************************************************
+#creer un ndvi avec rioxarray
+import rioxarray
+
+# ouvrir les rasters
+red = rioxarray.open_rasterio("B04.tif").squeeze()
+nir = rioxarray.open_rasterio("B08.tif").squeeze()
+
+# calcul NDVI
+ndvi = (nir - red) / (nir + red)
+
+# sauvegarde
+ndvi.rio.to_raster("ndvi.tif")
+
