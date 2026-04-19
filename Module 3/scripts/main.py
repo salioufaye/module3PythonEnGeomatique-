@@ -111,9 +111,11 @@ with rasterio.open(r"Module 3\data\output\B7_Classes.tif", "w", **meta) as desti
 
 logging.info("fin du script d'extraction des valeurs du raster")
 
+
+#**********************************************************************************
 # Autre version pour faire la decoupe:
 # utiliser rioxarray, plus moderne:
-
+#***********************************************************************************
 import rioxarray
 import geopandas as gpd
 
