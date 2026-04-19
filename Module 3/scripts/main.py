@@ -110,3 +110,22 @@ with rasterio.open(r"Module 3\data\output\B7_Classes.tif", "w", **meta) as desti
 
 
 logging.info("fin du script d'extraction des valeurs du raster")
+
+# Autre version pour faire la decoupe:
+# utiliser rioxarray, plus moderne:
+
+import rioxarray
+import geopandas as gpd
+
+# Charger raster
+ndvi = rioxarray.open_rasterio("Module 3/data/input/ndvi.tif")
+
+# Charger zone
+zone = gpd.read_file("Module 3/data/input/zone_etude.shp")
+
+# Découper
+ndvi_clip = ndvi.rio.clip(zone.geometry, zone.crs)
+
+# Sauvegarder
+ndvi_clip.rio.to_raster("Module 3/data/output/ndvi_clip.tif")
+
